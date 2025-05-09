@@ -3,10 +3,14 @@ import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 type Language = 'en' | 'fr' | 'ar' | 'es';
 
+interface TranslationParams {
+  [key: string]: string | number;
+}
+
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: TranslationParams) => string;
 }
 
 const translations = {
@@ -137,9 +141,18 @@ export const useLanguage = () => useContext(LanguageContext);
 export const LanguageProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
 
-  const t = (key: string): string => {
+  const t = (key: string, params?: TranslationParams): string => {
     // @ts-ignore
-    return translations[language][key] || key;
+    let text = translations[language][key] || key;
+    
+    // Replace parameters in the text if they exist
+    if (params) {
+      Object.keys(params).forEach(paramKey => {
+        text = text.replace(`{${paramKey}}`, String(params[paramKey]));
+      });
+    }
+    
+    return text;
   };
 
   return (
