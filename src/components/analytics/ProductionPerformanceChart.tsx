@@ -34,7 +34,13 @@ const ProductionPerformanceChart = ({ data, fullSize = false }: ProductionPerfor
               `${value}%`, 
               name === "passingRate" ? t('passingRate') : t('failureRate')
             ]}
-            labelFormatter={(index) => `${t('batch')}: ${chartData[index].batchId}`}
+            labelFormatter={(index) => {
+              // Check if index is valid and the chartData item exists
+              if (index === undefined || typeof index !== 'number' || !chartData[index]) {
+                return t('batch') + ': ' + t('unknown');
+              }
+              return `${t('batch')}: ${chartData[index].batchId}`;
+            }}
           />
           <Legend />
           <Bar dataKey="passingRate" fill="#22c55e" name={t('passingRate')} />
