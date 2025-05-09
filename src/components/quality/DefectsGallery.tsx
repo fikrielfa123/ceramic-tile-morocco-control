@@ -69,7 +69,7 @@ const DefectsGallery: React.FC<DefectsGalleryProps> = ({ batches, defects }) => 
                 <SelectValue placeholder="Filter by batch" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Batches</SelectItem>
+                <SelectItem value="all-batches">All Batches</SelectItem>
                 {batches.map((batch) => (
                   <SelectItem key={batch.id} value={batch.id}>
                     {batch.name}
@@ -87,7 +87,7 @@ const DefectsGallery: React.FC<DefectsGalleryProps> = ({ batches, defects }) => 
                 <SelectValue placeholder="Filter by defect type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Types</SelectItem>
+                <SelectItem value="all-types">All Types</SelectItem>
                 <SelectItem value="crack">Crack</SelectItem>
                 <SelectItem value="chip">Chip</SelectItem>
                 <SelectItem value="colorDeviation">Color Deviation</SelectItem>
