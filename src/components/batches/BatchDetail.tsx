@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Batch, Measurement, Defect } from "@/types";
-import { ArrowLeft, FileText, Printer } from "lucide-react";
+import { ArrowLeft, FileText, Printer, FileLineChart, CheckSquare, AlertTriangle } from "lucide-react";
 import { 
   Table, 
   TableBody, 
@@ -15,6 +14,7 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { generateISOReport, getCorrectiveAction } from "@/utils/validation";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface BatchDetailProps {
   batch: Batch;
@@ -25,6 +25,7 @@ interface BatchDetailProps {
 const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects }) => {
   const [activeTab, setActiveTab] = useState("overview");
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const isoReport = generateISOReport(measurements);
   const failedMeasurements = measurements.filter(m => m.status === "fail");
@@ -38,15 +39,18 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
           </Button>
           <div>
             <h1 className="text-2xl font-bold">{batch.name}</h1>
-            <p className="text-sm text-muted-foreground">Batch ID: {batch.id}</p>
+            <p className="text-sm text-muted-foreground">{t('batchId')}: {batch.id}</p>
           </div>
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline" size="sm">
-            <Printer className="mr-2 h-4 w-4" /> Print
+          <Button variant="outline" size="sm" onClick={() => navigate(`/batches/measurement/${batch.id}`)}>
+            <CheckSquare className="mr-2 h-4 w-4" /> {t('addMeasurement')}
           </Button>
-          <Button size="sm" className="bg-industrial-blue">
-            <FileText className="mr-2 h-4 w-4" /> Generate Report
+          <Button variant="outline" size="sm" onClick={() => navigate(`/batches/defect/${batch.id}`)}>
+            <AlertTriangle className="mr-2 h-4 w-4" /> {t('reportDefect')}
+          </Button>
+          <Button size="sm" className="bg-industrial-blue" onClick={() => navigate(`/batches/report/${batch.id}`)}>
+            <FileText className="mr-2 h-4 w-4" /> {t('generateReport')}
           </Button>
         </div>
       </div>
@@ -54,7 +58,7 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Status</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('status')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
@@ -66,24 +70,24 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">ISO Compliance</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('isoCompliance')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center">
               {isoReport.isCompliant ? (
-                <div className="status-pass">Compliant</div>
+                <div className="status-pass">{t('compliant')}</div>
               ) : (
-                <div className="status-fail">Non-Compliant</div>
+                <div className="status-fail">{t('nonCompliant')}</div>
               )}
               <span className="ml-2 text-sm text-muted-foreground">
-                {isoReport.passCount} pass, {isoReport.warningCount} warnings, {isoReport.nonCompliantCount} failures
+                {isoReport.passCount} {t('pass')}, {isoReport.warningCount} {t('warnings')}, {isoReport.nonCompliantCount} {t('failures')}
               </span>
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Passing Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('passingRate')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -95,32 +99,32 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
 
       <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="measurements">Measurements</TabsTrigger>
-          <TabsTrigger value="defects">Defects</TabsTrigger>
-          <TabsTrigger value="actions">Corrective Actions</TabsTrigger>
+          <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
+          <TabsTrigger value="measurements">{t('measurements')}</TabsTrigger>
+          <TabsTrigger value="defects">{t('defects')}</TabsTrigger>
+          <TabsTrigger value="actions">{t('correctiveActions')}</TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Batch Information</CardTitle>
+              <CardTitle>{t('batchInformation')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <p className="text-sm font-medium">Production Date</p>
+                  <p className="text-sm font-medium">{t('productionDate')}</p>
                   <p className="text-sm text-muted-foreground">{batch.date}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium">Kiln</p>
+                  <p className="text-sm font-medium">{t('kiln')}</p>
                   <p className="text-sm text-muted-foreground">{batch.kiln}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium">Material Lot</p>
+                  <p className="text-sm font-medium">{t('materialLot')}</p>
                   <p className="text-sm text-muted-foreground">{batch.materialLot}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium">Created By</p>
+                  <p className="text-sm font-medium">{t('createdBy')}</p>
                   <p className="text-sm text-muted-foreground">Fatima Benkirane</p>
                 </div>
               </div>
@@ -130,16 +134,16 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Latest Measurements</CardTitle>
-                <CardDescription>Recent quality control measurements</CardDescription>
+                <CardTitle>{t('latestMeasurements')}</CardTitle>
+                <CardDescription>{t('recentQualityControlMeasurements')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Parameter</TableHead>
-                      <TableHead>Value</TableHead>
-                      <TableHead>Status</TableHead>
+                      <TableHead>{t('parameter')}</TableHead>
+                      <TableHead>{t('value')}</TableHead>
+                      <TableHead>{t('status')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -163,17 +167,17 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
 
             <Card>
               <CardHeader>
-                <CardTitle>Reported Defects</CardTitle>
-                <CardDescription>Visual and physical defects</CardDescription>
+                <CardTitle>{t('reportedDefects')}</CardTitle>
+                <CardDescription>{t('visualAndPhysicalDefects')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {defects.length > 0 ? (
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Type</TableHead>
-                        <TableHead>Severity</TableHead>
-                        <TableHead>Date</TableHead>
+                        <TableHead>{t('type')}</TableHead>
+                        <TableHead>{t('severity')}</TableHead>
+                        <TableHead>{t('date')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -188,7 +192,7 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
                   </Table>
                 ) : (
                   <div className="py-4 text-center text-muted-foreground">
-                    No defects reported for this batch
+                    {t('noDefectsReported')}
                   </div>
                 )}
               </CardContent>
@@ -199,22 +203,22 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
         <TabsContent value="measurements">
           <Card>
             <CardHeader>
-              <CardTitle>Quality Control Measurements</CardTitle>
+              <CardTitle>{t('qualityControlMeasurements')}</CardTitle>
               <CardDescription>
-                All measurements for this batch against ISO 13006 standards
+                {t('measurementsAgainstISOStandards')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Parameter</TableHead>
-                    <TableHead>Value</TableHead>
-                    <TableHead>Min</TableHead>
-                    <TableHead>Max</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Measured By</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead>{t('parameter')}</TableHead>
+                    <TableHead>{t('value')}</TableHead>
+                    <TableHead>{t('min')}</TableHead>
+                    <TableHead>{t('max')}</TableHead>
+                    <TableHead>{t('status')}</TableHead>
+                    <TableHead>{t('measuredBy')}</TableHead>
+                    <TableHead>{t('date')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -248,9 +252,9 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
         <TabsContent value="defects">
           <Card>
             <CardHeader>
-              <CardTitle>Visual Defects</CardTitle>
+              <CardTitle>{t('visualDefects')}</CardTitle>
               <CardDescription>
-                Cataloged defects with images and descriptions
+                {t('catalogedDefectsWithImages')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -284,7 +288,7 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
                           {defect.description}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          Reported on {defect.date}
+                          {t('reportedOn')} {defect.date}
                         </p>
                       </CardContent>
                     </Card>
@@ -292,7 +296,7 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
                 </div>
               ) : (
                 <div className="py-8 text-center text-muted-foreground">
-                  No defects have been reported for this batch
+                  {t('noDefectsReportedForBatch')}
                 </div>
               )}
             </CardContent>
@@ -302,9 +306,9 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
         <TabsContent value="actions">
           <Card>
             <CardHeader>
-              <CardTitle>Corrective Actions</CardTitle>
+              <CardTitle>{t('correctiveActions')}</CardTitle>
               <CardDescription>
-                Recommended actions for non-compliant parameters
+                {t('recommendedActionsForNonCompliant')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -312,10 +316,10 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Parameter</TableHead>
-                      <TableHead>Current Value</TableHead>
-                      <TableHead>Required Range</TableHead>
-                      <TableHead>Recommended Action</TableHead>
+                      <TableHead>{t('parameter')}</TableHead>
+                      <TableHead>{t('currentValue')}</TableHead>
+                      <TableHead>{t('requiredRange')}</TableHead>
+                      <TableHead>{t('recommendedAction')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -342,7 +346,7 @@ const BatchDetail: React.FC<BatchDetailProps> = ({ batch, measurements, defects 
                 </Table>
               ) : (
                 <div className="py-8 text-center text-muted-foreground">
-                  No corrective actions needed for this batch
+                  {t('noCorrectiveActionsNeeded')}
                 </div>
               )}
             </CardContent>

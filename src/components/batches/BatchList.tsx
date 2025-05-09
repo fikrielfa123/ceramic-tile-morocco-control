@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   Table, 
   TableBody, 
@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Search, MoreHorizontal, Plus } from "lucide-react";
 import { Batch } from "@/types";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface BatchListProps {
   batches: Batch[];
@@ -28,6 +29,8 @@ interface BatchListProps {
 
 const BatchList: React.FC<BatchListProps> = ({ batches }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+  const { t } = useLanguage();
   
   const filteredBatches = batches.filter(
     (batch) =>
@@ -41,14 +44,14 @@ const BatchList: React.FC<BatchListProps> = ({ batches }) => {
         <div className="flex items-center relative w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search batches..."
+            placeholder={t('searchBatches')}
             className="pl-8"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Button className="bg-industrial-blue">
-          <Plus className="mr-2 h-4 w-4" /> New Batch
+        <Button className="bg-industrial-blue" onClick={() => navigate('/batches/new')}>
+          <Plus className="mr-2 h-4 w-4" /> {t('newBatch')}
         </Button>
       </div>
 
@@ -56,13 +59,13 @@ const BatchList: React.FC<BatchListProps> = ({ batches }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Batch ID</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Kiln</TableHead>
-              <TableHead>Material Lot</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Passing Rate</TableHead>
+              <TableHead>{t('batchId')}</TableHead>
+              <TableHead>{t('name')}</TableHead>
+              <TableHead>{t('date')}</TableHead>
+              <TableHead>{t('kiln')}</TableHead>
+              <TableHead>{t('materialLot')}</TableHead>
+              <TableHead>{t('status')}</TableHead>
+              <TableHead className="text-right">{t('passingRate')}</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -95,15 +98,21 @@ const BatchList: React.FC<BatchListProps> = ({ batches }) => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>
-                        <Link to={`/batches/${batch.id}`}>View Details</Link>
+                      <DropdownMenuLabel>{t('actions')}</DropdownMenuLabel>
+                      <DropdownMenuItem onClick={() => navigate(`/batches/${batch.id}`)}>
+                        {t('viewDetails')}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem>Add Measurement</DropdownMenuItem>
-                      <DropdownMenuItem>Report Defect</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate(`/batches/measurement/${batch.id}`)}>
+                        {t('addMeasurement')}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate(`/batches/defect/${batch.id}`)}>
+                        {t('reportDefect')}
+                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem>Generate Report</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate(`/batches/report/${batch.id}`)}>
+                        {t('generateReport')}
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
