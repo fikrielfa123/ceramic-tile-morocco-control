@@ -1,6 +1,7 @@
 
 import React, { ReactNode } from "react";
 import Sidebar from "./Sidebar";
+import LanguageSelector from "./LanguageSelector";
 import { Bell } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
@@ -12,12 +13,15 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+  const { t } = useLanguage();
+  
   return (
     <div className="flex h-screen bg-gray-50">
       <Sidebar />
@@ -28,6 +32,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <p className="text-sm text-gray-500">Céramica Dersa</p>
           </div>
           <div className="flex items-center space-x-4">
+            <LanguageSelector />
             <Button variant="ghost" size="icon">
               <Bell size={20} />
             </Button>
@@ -50,10 +55,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem>{t('profile')}</DropdownMenuItem>
+                <DropdownMenuItem>{t('settings')}</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Log out</DropdownMenuItem>
+                <DropdownMenuItem>{t('logout')}</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

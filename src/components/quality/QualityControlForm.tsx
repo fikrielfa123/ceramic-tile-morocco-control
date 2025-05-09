@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Batch, QualityParameter } from "@/types";
 import { validateMeasurement } from "@/utils/validation";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface QualityControlFormProps {
   batches: Batch[];
@@ -36,6 +37,7 @@ const QualityControlForm: React.FC<QualityControlFormProps> = ({
   
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -107,18 +109,18 @@ const QualityControlForm: React.FC<QualityControlFormProps> = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Record Quality Measurement</CardTitle>
+        <CardTitle>{t('recordQualityMeasurement')}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid gap-2">
-            <Label htmlFor="batchId">Batch</Label>
+            <Label htmlFor="batchId">{t('batch')}</Label>
             <Select
               onValueChange={(value) => handleSelectChange("batchId", value)}
               value={formData.batchId}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select a batch" />
+                <SelectValue placeholder={t('selectBatch')} />
               </SelectTrigger>
               <SelectContent>
                 {batches.map((batch) => (
@@ -131,13 +133,13 @@ const QualityControlForm: React.FC<QualityControlFormProps> = ({
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="parameterId">Parameter</Label>
+            <Label htmlFor="parameterId">{t('parameter')}</Label>
             <Select
               onValueChange={(value) => handleSelectChange("parameterId", value)}
               value={formData.parameterId}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select a quality parameter" />
+                <SelectValue placeholder={t('selectParameter')} />
               </SelectTrigger>
               <SelectContent>
                 {parameters.map((param) => (
@@ -152,7 +154,7 @@ const QualityControlForm: React.FC<QualityControlFormProps> = ({
           {selectedParameter && (
             <div className="grid gap-2">
               <Label htmlFor="value">
-                Measurement Value ({selectedParameter.unit})
+                {t('measurementValue')} ({selectedParameter.unit})
               </Label>
               <div className="flex items-center space-x-2">
                 <Input
@@ -174,7 +176,7 @@ const QualityControlForm: React.FC<QualityControlFormProps> = ({
                 )}
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                ISO Standard: {selectedParameter.minValue} - {selectedParameter.maxValue} {selectedParameter.unit}
+                {t('isoStandard')}: {selectedParameter.minValue} - {selectedParameter.maxValue} {selectedParameter.unit}
               </p>
             </div>
           )}
@@ -203,14 +205,14 @@ const QualityControlForm: React.FC<QualityControlFormProps> = ({
                 setValidationResult(null);
               }}
             >
-              Reset
+              {t('reset')}
             </Button>
             <Button 
               type="submit" 
               className="bg-industrial-blue"
               disabled={isLoading || !formData.batchId || !formData.parameterId || !formData.value}
             >
-              {isLoading ? "Recording..." : "Record Measurement"}
+              {isLoading ? t('recording') : t('recordMeasurement')}
             </Button>
           </div>
         </form>

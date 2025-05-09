@@ -5,17 +5,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import QualityControlForm from "@/components/quality/QualityControlForm";
 import DefectsGallery from "@/components/quality/DefectsGallery";
 import { mockBatches, mockQualityParameters, mockDefects } from "@/data/mockData";
+import { useLanguage } from "@/context/LanguageContext";
 
 const QualityControl = () => {
   const [activeTab, setActiveTab] = useState("measurements");
+  const { t } = useLanguage();
   
   return (
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Quality Control</h1>
+          <h1 className="text-3xl font-bold">{t('qualityControlTitle')}</h1>
           <p className="text-muted-foreground">
-            Record quality measurements and document visual defects
+            {t('qualityControlDesc')}
           </p>
         </div>
         
@@ -26,8 +28,8 @@ const QualityControl = () => {
           className="space-y-4"
         >
           <TabsList>
-            <TabsTrigger value="measurements">Physical Measurements</TabsTrigger>
-            <TabsTrigger value="defects">Visual Defects</TabsTrigger>
+            <TabsTrigger value="measurements">{t('physicalMeasurements')}</TabsTrigger>
+            <TabsTrigger value="defects">{t('visualDefects')}</TabsTrigger>
           </TabsList>
           
           <TabsContent value="measurements" className="space-y-4">

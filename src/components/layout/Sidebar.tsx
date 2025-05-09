@@ -14,6 +14,7 @@ import {
   User
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface SidebarProps {
   className?: string;
@@ -22,13 +23,14 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const { t } = useLanguage();
 
   const navigation = [
-    { name: "Dashboard", href: "/dashboard", icon: Home },
-    { name: "Production Batches", href: "/batches", icon: Box },
-    { name: "Quality Control", href: "/quality-control", icon: ClipboardCheck },
-    { name: "Reports", href: "/reports", icon: FileText },
-    { name: "Analytics", href: "/analytics", icon: BarChart3 },
+    { name: t('dashboard'), href: "/dashboard", icon: Home },
+    { name: t('batches'), href: "/batches", icon: Box },
+    { name: t('qualityControl'), href: "/quality-control", icon: ClipboardCheck },
+    { name: t('reports'), href: "/reports", icon: FileText },
+    { name: t('analytics'), href: "/analytics", icon: BarChart3 },
   ];
 
   return (
@@ -45,7 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
             <div className="h-8 w-8 bg-industrial-blue rounded-md flex items-center justify-center text-white font-bold">
               CT
             </div>
-            <span className="ml-3 font-semibold text-lg">CeramControl</span>
+            <span className="ml-3 font-semibold text-lg">{t('appName')}</span>
           </div>
         )}
         <Button
@@ -87,7 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           )}
         >
           <Settings size={20} />
-          {!collapsed && <span className="ml-3">Settings</span>}
+          {!collapsed && <span className="ml-3">{t('settings')}</span>}
         </Link>
         <Link
           to="/profile"
@@ -98,7 +100,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           )}
         >
           <User size={20} />
-          {!collapsed && <span className="ml-3">Profile</span>}
+          {!collapsed && <span className="ml-3">{t('profile')}</span>}
         </Link>
         <Link
           to="/"
@@ -108,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           )}
         >
           <LogOut size={20} />
-          {!collapsed && <span className="ml-3">Logout</span>}
+          {!collapsed && <span className="ml-3">{t('logout')}</span>}
         </Link>
       </div>
     </div>
