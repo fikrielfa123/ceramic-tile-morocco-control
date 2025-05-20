@@ -9,7 +9,232 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      batches: {
+        Row: {
+          created_at: string
+          created_by: string
+          date: string
+          id: string
+          kiln: string
+          material_lot: string
+          name: string
+          passing_rate: number | null
+          status: Database["public"]["Enums"]["batch_status"]
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          date?: string
+          id: string
+          kiln: string
+          material_lot: string
+          name: string
+          passing_rate?: number | null
+          status?: Database["public"]["Enums"]["batch_status"]
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          date?: string
+          id?: string
+          kiln?: string
+          material_lot?: string
+          name?: string
+          passing_rate?: number | null
+          status?: Database["public"]["Enums"]["batch_status"]
+        }
+        Relationships: []
+      }
+      defects: {
+        Row: {
+          batch_id: string
+          date: string
+          description: string
+          id: string
+          image_url: string | null
+          reported_by: string
+          severity: Database["public"]["Enums"]["defect_severity"]
+          type: Database["public"]["Enums"]["defect_type"]
+        }
+        Insert: {
+          batch_id: string
+          date?: string
+          description: string
+          id?: string
+          image_url?: string | null
+          reported_by: string
+          severity: Database["public"]["Enums"]["defect_severity"]
+          type: Database["public"]["Enums"]["defect_type"]
+        }
+        Update: {
+          batch_id?: string
+          date?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          reported_by?: string
+          severity?: Database["public"]["Enums"]["defect_severity"]
+          type?: Database["public"]["Enums"]["defect_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "defects_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      measurements: {
+        Row: {
+          batch_id: string
+          date: string
+          id: string
+          max: number
+          measured_by: string
+          min: number
+          parameter_id: string
+          status: Database["public"]["Enums"]["measurement_status"]
+          value: number
+        }
+        Insert: {
+          batch_id: string
+          date?: string
+          id?: string
+          max: number
+          measured_by: string
+          min: number
+          parameter_id: string
+          status: Database["public"]["Enums"]["measurement_status"]
+          value: number
+        }
+        Update: {
+          batch_id?: string
+          date?: string
+          id?: string
+          max?: number
+          measured_by?: string
+          min?: number
+          parameter_id?: string
+          status?: Database["public"]["Enums"]["measurement_status"]
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "measurements_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "measurements_parameter_id_fkey"
+            columns: ["parameter_id"]
+            isOneToOne: false
+            referencedRelation: "quality_parameters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar: string | null
+          email: string
+          id: string
+          name: string
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Insert: {
+          avatar?: string | null
+          email: string
+          id: string
+          name: string
+          role?: Database["public"]["Enums"]["user_role"]
+        }
+        Update: {
+          avatar?: string | null
+          email?: string
+          id?: string
+          name?: string
+          role?: Database["public"]["Enums"]["user_role"]
+        }
+        Relationships: []
+      }
+      quality_parameters: {
+        Row: {
+          category: Database["public"]["Enums"]["parameter_category"]
+          created_at: string
+          description: string | null
+          id: string
+          iso_code: string
+          max_value: number
+          min_value: number
+          name: string
+          unit: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["parameter_category"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          iso_code: string
+          max_value: number
+          min_value: number
+          name: string
+          unit: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["parameter_category"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          iso_code?: string
+          max_value?: number
+          min_value?: number
+          name?: string
+          unit?: string
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          batch_id: string
+          date: string
+          generated_by: string
+          id: string
+          is_compliant: boolean
+          summary: string
+          title: string
+        }
+        Insert: {
+          batch_id: string
+          date?: string
+          generated_by: string
+          id?: string
+          is_compliant: boolean
+          summary: string
+          title: string
+        }
+        Update: {
+          batch_id?: string
+          date?: string
+          generated_by?: string
+          id?: string
+          is_compliant?: boolean
+          summary?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +243,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      batch_status: "pending" | "inProgress" | "completed" | "failed"
+      defect_severity: "low" | "medium" | "high"
+      defect_type: "crack" | "chip" | "colorDeviation" | "glazeDefect" | "other"
+      measurement_status: "pass" | "fail" | "warning"
+      parameter_category: "dimensional" | "visual" | "physical" | "other"
+      user_role: "admin" | "qualityManager" | "productionStaff" | "auditor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +363,13 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      batch_status: ["pending", "inProgress", "completed", "failed"],
+      defect_severity: ["low", "medium", "high"],
+      defect_type: ["crack", "chip", "colorDeviation", "glazeDefect", "other"],
+      measurement_status: ["pass", "fail", "warning"],
+      parameter_category: ["dimensional", "visual", "physical", "other"],
+      user_role: ["admin", "qualityManager", "productionStaff", "auditor"],
+    },
   },
 } as const
