@@ -11,7 +11,7 @@ import {
 import { Globe } from 'lucide-react';
 
 const LanguageSelector: React.FC = () => {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
 
   const languages = [
     { code: 'en', label: 'English' },
@@ -25,7 +25,7 @@ const LanguageSelector: React.FC = () => {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <Globe size={20} />
-          <span className="sr-only">Change language</span>
+          <span className="sr-only">{t('selectLanguage')}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
